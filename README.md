@@ -1,8 +1,19 @@
 # git-custom-credentials-buildpack
 
-This is to use git credentials in buildpacks to load private repositories.
+This allows adding git credentials in buildpacks to load private repositories.
 
-This repo is bash scripts so there are no dependencies such as ruby.
+## Installation
+
+Add buildpack at the beginning so it runs before your app is build:
+
+`heroku buildpacks:add -i 1 https://github.com/dbrody/git-custom-credentials-buildpack`
+
+Set your credentials:
+
+`heroku config:set GIT_ACCESS_CREDENTIALS=https://x-oauth-basic:<GITHUB_ACCESS_TOKEN>@github.com/`
+
+Replace `<GITHUB_ACCESS_TOKEN>` with your actual token.
+
 
 ## Usage
 
@@ -19,16 +30,15 @@ An example credential should be of the format such as: `https://x-oauth-basic:<G
 
 Most alternatives seem to be old or have dependencies.
 
-Alternative [custom-ssh-key-buildpack](https://github.com/simon0191/custom-ssh-key-buildpack) requires ruby which is not available by default on Heroku stack 22.
+[custom-ssh-key-buildpack](https://github.com/simon0191/custom-ssh-key-buildpack) requires ruby which is not available by default on Heroku stack 22.
 
-One alternative is [heroku-buildpack-github-netrc](https://github.com/timshadel/heroku-buildpack-github-netrc.git) but this doesnt properly set environment for fetching private repos during application build for some reason.
-
+[heroku-buildpack-github-netrc](https://github.com/timshadel/heroku-buildpack-github-netrc.git) but the repository is old and doesnt properly set environment for fetching private repos during application build for some reason.
 
 ## Use case
 
-My main use case for this is it allows for elixir applications to download private repositories on deployment.
+My main use case for is for elixir applications to download private repositories on deployment.
 
-In your `mix.exs` file you can include a private repo just like any other repository:
+In a `mix.exs` file you can include a private repo just like any other repository:
 ```elixir
 ...
 deps: [
