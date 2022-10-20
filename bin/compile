@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+# Generates a git credential file and loads it
+
+BUILD_DIR=$1
+ENV_DIR=$3
+
+if [[ -f $ENV_DIR/GIT_ACCESS_CREDENTIALS ]]; then
+
+  echo "" >&1
+  echo "       Loading Git Credentials"
+
+  echo "" > ~/custom-git-credential
+
+  # Split $GIT_ACCESS_CREDENTIALS
+  IFS=',' ;for element in `cat $ENV_DIR/GIT_ACCESS_CREDENTIALS`;
+  do
+    echo "       - Loaded Git Credential"
+    echo -e "$element\n" >> ~/custom-git-credential
+  done
+
+  echo "       Configuring Git"
+  
+  git config --global credential.helper store --file ~/custom-git-credential
+  git config --global --replace-all 'url.https://github.com/.insteadOf' 'ssh://git@github.com/'
+  git config --global --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+
+  echo "-----> Successfully loaded Git Credentials"
+
+fi
